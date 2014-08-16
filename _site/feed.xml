@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Your awesome title</title>
-    <description>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
-</description>
-    <link>http://yourdomain.com/</link>
-    <atom:link href="http://yourdomain.com/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Sat, 16 Aug 2014 21:44:32 +0800</pubDate>
-    <lastBuildDate>Sat, 16 Aug 2014 21:44:32 +0800</lastBuildDate>
+    <title>~ Week Eight . 秋知 ~</title>
+    <description>What would happen on Week Eight?Let me tell you...</description>
+    <link>http://weekeight.github.io/</link>
+    <atom:link href="http://weekeight.github.io/feed.xml" rel="self" type="application/rss+xml" />
+    <pubDate>Sun, 17 Aug 2014 01:17:08 +0800</pubDate>
+    <lastBuildDate>Sun, 17 Aug 2014 01:17:08 +0800</lastBuildDate>
     <generator>Jekyll v2.3.0</generator>
     
       <item>
@@ -28,13 +27,34 @@
 
 </description>
         <pubDate>Sun, 17 Aug 2014 05:44:07 +0800</pubDate>
-        <link>http://yourdomain.com/jekyll/update/2014/08/17/welcome-to-jekyll.html</link>
-        <guid isPermaLink="true">http://yourdomain.com/jekyll/update/2014/08/17/welcome-to-jekyll.html</guid>
+        <link>http://weekeight.github.io/jekyll/update/2014/08/17/welcome-to-jekyll.html</link>
+        <guid isPermaLink="true">http://weekeight.github.io/jekyll/update/2014/08/17/welcome-to-jekyll.html</guid>
         
         
         <category>jekyll</category>
         
         <category>update</category>
+        
+      </item>
+    
+      <item>
+        <title>My First Post on My Github Pages</title>
+        <description>&lt;h1 id=&quot;section&quot;&gt;第一篇文章&lt;/h1&gt;
+
+&lt;h2 id=&quot;learn-jekyll&quot;&gt;Learn Jekyll&lt;/h2&gt;
+
+&lt;pre&gt;&lt;code&gt;var test = require(&#39;node&#39;);
+alert(&#39;I just test&#39;);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&quot;day-day-up&quot;&gt;Day Day Up&lt;/h2&gt;
+
+&lt;p&gt;好好学习，天天向上&lt;/p&gt;
+</description>
+        <pubDate>Sun, 17 Aug 2014 00:00:00 +0800</pubDate>
+        <link>http://weekeight.github.io/2014/08/17/my-first-post.html</link>
+        <guid isPermaLink="true">http://weekeight.github.io/2014/08/17/my-first-post.html</guid>
+        
         
       </item>
     
