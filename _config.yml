@@ -1,7 +1,8 @@
 # Site settings
-title: ~ Week Eight . 秋知 ~
+name: ~ Week Eight . 秋知 ~
 email: benfchen0418@gmail.com
 description: What would happen on Week Eight?Let me tell you...
+permalink: /:year/:month/:day/:title.html
 baseurl: "" # the subpath of your site, e.g. /blog/
 url: "http://weekeight.github.io" # the base hostname & protocol for your site
 github_username:  weekeight
@@ -18,3 +19,18 @@ defaults:
     values:
       layout: "default"
       author: "weekeight"
+
+
+navigations:
+  - title: Archive
+    class: fa fa-list-ul
+    href: /archive.html
+  - title: Tags
+    class: fa fa-tags
+    href: /tags.html
+  - title: About
+    class: fa fa-user
+    href: /about.html
+  - title: Subscribe
+    class: fa fa-rss
+    href: /atom.xml
