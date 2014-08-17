@@ -10,7 +10,13 @@
  * --------------------------------- */
 
 @import url(/media/fonts/telex-regular.css);
-@import url(http://fonts.googleapis.com/css?family=Ubuntu:300);
+/*@import url(http://fonts.googleapis.com/css?family=Ubuntu:300);*/
+@font-face {
+  font-family: 'Ubuntu';
+  font-style: normal;
+  font-weight: 300;
+  src: local('Ubuntu Light'), local('Ubuntu-Light'), url(/media/fonts/telex-regular-webfont.woff2) format('woff2'), url(/media/fonts/telex-regular-webfont.woff) format('woff');
+}
 
 $font-name: "telexregular";
 $mono-font-name: "Ubuntu";

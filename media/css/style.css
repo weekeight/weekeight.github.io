@@ -10,7 +10,15 @@
  * |\.|._)._)
  * --------------------------------- */
 @import url(/media/fonts/telex-regular.css);
-@import url(http://fonts.googleapis.com/css?family=Ubuntu:300);
+/*@import url(http://fonts.googleapis.com/css?family=Ubuntu:300);*/
+@font-face {
+  font-family: 'Ubuntu';
+  font-style: normal;
+  font-weight: 300;
+  src: local('Ubuntu Light'), local('Ubuntu-Light'), url(http://fonts.gstatic.com/s/ubuntu/v6/_aijTyevf54tkVDLy-dlnJBw1xU1rKptJj_0jans920.woff2) format('woff2'), url(http://fonts.gstatic.com/s/ubuntu/v6/_aijTyevf54tkVDLy-dlnLO3LdcAZYWl9Si6vvxL-qU.woff) format('woff');
+  
+}
+
 * {
   margin: 0;
   padding: 0; }
