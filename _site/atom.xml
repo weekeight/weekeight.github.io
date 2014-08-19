@@ -4,12 +4,134 @@
  <title>~ Week Eight . 秋知 ~</title>
  <link href="/atom.xml" rel="self"/>
  <link href=""/>
- <updated>2014-08-17T15:13:51+08:00</updated>
+ <updated>2014-08-20T01:00:49+08:00</updated>
  <id></id>
  <author>
    <name></name>
  </author>
 
+ 
+ <entry>
+   <title>如何编写Gulp插件&amp;gulp-kmd</title>
+   <link href="/2014/08/20/writing-gulp-plugin.html"/>
+   <updated>2014-08-20T00:00:00+08:00</updated>
+   <id>/2014/08/20/writing-gulp-plugin</id>
+   <content type="html">&lt;h2 id=&quot;gulp&quot;&gt;gulp简单介绍&lt;/h2&gt;
+
+&lt;p&gt;&lt;code&gt;gulp&lt;/code&gt;正如官网所说的那样是一个&lt;code&gt;The streaming build system&lt;/code&gt;，一个充分利用了&lt;code&gt;Node.js Streams API&lt;/code&gt;的一个构建任务管理工具，更简单清爽的插件使用习惯。ATA上&lt;em&gt;@剑平&lt;/em&gt;也介绍过&lt;code&gt;gulp&lt;/code&gt;的简单用法(&lt;a href=&quot;http://www.atatech.org/articles/13458&quot;&gt;传送门&lt;/a&gt;)&lt;/p&gt;
+
+&lt;h2 id=&quot;grunt-vs-gulp&quot;&gt;grunt vs gulp&lt;/h2&gt;
+
+&lt;p&gt;&lt;code&gt;grunt&lt;/code&gt;是目前最流行的前端构建工具了，拥有强大的社区，丰富多样的插件。个人觉得&lt;code&gt;grunt&lt;/code&gt;与&lt;code&gt;gulp&lt;/code&gt;两者无所谓&lt;em&gt;好&lt;/em&gt;与&lt;em&gt;坏&lt;/em&gt;，各自都有自己的特点和缺点，如何选择其实更加偏向个人喜欢什么样的编码风格。关于两者的区别分析详情有兴趣的可以看下&lt;a href=&quot;&quot;&gt;这篇文章&lt;/a&gt;，下面主要做一下两者区别的总结：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code&gt;grunt&lt;/code&gt;拥有强大的社区，&lt;code&gt;gulp&lt;/code&gt;发展在前者之后，社区相对差一些&lt;/li&gt;
+  &lt;li&gt;&lt;code&gt;grunt&lt;/code&gt;拥有非常多的插件，&lt;code&gt;gulp&lt;/code&gt;插件覆盖度没那么广，但是质量相对高一下，&lt;a href=&quot;http://gulpjs.com/plugins/&quot;&gt;常用的插件&lt;/a&gt;也差不多都有&lt;/li&gt;
+  &lt;li&gt;&lt;code&gt;grunt&lt;/code&gt;相对有点配置‘优先’的感觉，插件配置较多，而&lt;code&gt;gulp&lt;/code&gt;更好地诠释了&lt;a href=&quot;&quot;&gt;&lt;strong&gt;code over configuration&lt;/strong&gt;&lt;/a&gt;，插件使用清爽优雅&lt;/li&gt;
+  &lt;li&gt;&lt;code&gt;grunt&lt;/code&gt;相对频繁使用&lt;code&gt;IO&lt;/code&gt;，而&lt;code&gt;gulp&lt;/code&gt;利用&lt;code&gt;stream&lt;/code&gt;把一切都用&lt;code&gt;pipe&lt;/code&gt;(管道)优雅方便地串连起来了。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;gulp-1&quot;&gt;gulp简单插件编写基础&lt;/h2&gt;
+
+&lt;p&gt;关于&lt;code&gt;gulp&lt;/code&gt;插件编写，&lt;em&gt;@剑平&lt;/em&gt;也有写过一篇相似的文章&lt;a href=&quot;http://www.atatech.org/articles/14002&quot;&gt;Gulp.js深入讲解&lt;/a&gt;介绍。&lt;code&gt;gulp&lt;/code&gt;插件编写最重要的是理解&lt;code&gt;Node.js&lt;/code&gt;中的三种&lt;code&gt;stream&lt;/code&gt; : &lt;code&gt;readable streams&lt;/code&gt;,&lt;code&gt;writeable streams&lt;/code&gt;,&lt;code&gt;transform stream&lt;/code&gt;，以及最常用的&lt;code&gt;through2&lt;/code&gt;,&lt;code&gt;gulp-util&lt;/code&gt;模块，还有&lt;code&gt;gulp&lt;/code&gt;提供的几个API：&lt;code&gt;gulp.src&lt;/code&gt;,&lt;code&gt;gulp.dest&lt;/code&gt;。下面先对这些需要使用的基本模块，API做个介绍，最后通过一个简单实例来讲述一个&lt;code&gt;gulp&lt;/code&gt;插件如何编写。&lt;/p&gt;
+
+&lt;p&gt;在&lt;code&gt;node.js&lt;/code&gt;里面有四种&lt;code&gt;stream&lt;/code&gt; : &lt;code&gt;readable streams&lt;/code&gt;(只读的流),&lt;code&gt;writeable streams&lt;/code&gt;（只写的流）,&lt;code&gt;transform stream&lt;/code&gt;（读/写流）,&lt;code&gt;duplex streams&lt;/code&gt;（循环流，这里不讨论）。&lt;/p&gt;
+
+&lt;p&gt;在&lt;code&gt;node.js&lt;/code&gt;里面最简单的写法就是：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;var fs = require(&#39;fs&#39;);
+fs.createReadStream(&#39;xx.js&#39;).pipe(fs.createWriteStream(&#39;yy.js&#39;))
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;意指将一个文件以&lt;em&gt;只读流&lt;/em&gt;的方式读取内容再通过&lt;code&gt;pipe&lt;/code&gt;（管道）导入一个&lt;em&gt;只写流&lt;/em&gt;写进文件。&lt;/p&gt;
+
+&lt;p&gt;那么，如果我们需要在&lt;code&gt;只读流&lt;/code&gt;和&lt;code&gt;只写流&lt;/code&gt;间做一些修改再通过&lt;code&gt;pipe&lt;/code&gt;写到最终文件里面应该怎么做呢？这也就需要使用&lt;code&gt;读写流&lt;/code&gt;来充当一个类似&lt;em&gt;中转站&lt;/em&gt;效果了，而在&lt;code&gt;gulp&lt;/code&gt;插件编写中，最常用的就是使用&lt;code&gt;through2&lt;/code&gt;这个模块来替代&lt;code&gt;node.js&lt;/code&gt;原生的&lt;code&gt;transform stream&lt;/code&gt;了。（注：gulp官网示例用的就是这个模块，&lt;a href=&quot;http://www.atatech.org/articles/14002&quot;&gt;Gulp.js深入讲解&lt;/a&gt;这篇文章介绍的&lt;code&gt;gulp-clean&lt;/code&gt;用的是&lt;code&gt;event-stream&lt;/code&gt;）。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/rvagg/through2&quot;&gt;through2&lt;/a&gt;其实就是对&lt;code&gt;transform stream&lt;/code&gt;做了一层简单封装。在这里有必要说一下 through2() 和 through2.obj() 的区别，用法上面其实就是差了一个配置  through2({ objectMode: true }  == through2.obj()，那么不禁会问这个配置的意义是什么了，根据&lt;a href=&quot;http://nodejs.org/documentation/api/&quot;&gt;node.js Object Mode API&lt;/a&gt;解释，个人理解 through2.obj 能让我们在函数transformFunction里面对一个一个文件进行处理，而不只是片段，所以gulp插件中几乎都是使用through.obj这个函数的（这点不知是否理解有误，清楚的朋友希望能告诉我一下）&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;gulp.src&lt;/code&gt;其实就是用&lt;a href=&quot;https://github.com/isaacs/node-glob&quot;&gt;node-glob&lt;/a&gt;去读取相应文件并创建一个简单封装后的流能通过&lt;code&gt;pipe&lt;/code&gt;传给后面处理&lt;/p&gt;
+
+&lt;h2 id=&quot;gulp--gulp-kmd&quot;&gt;gulp插件编写示例 ~ gulp-kmd&lt;/h2&gt;
+
+&lt;p&gt;一个简单的gulp插件需要多少行代码？我的回答是只要&lt;strong&gt;24&lt;/strong&gt;行代码，对的，就是24行代码。今天在做&lt;code&gt;kissy editor-plugin&lt;/code&gt;的构建的时候，用到&lt;em&gt;@杰少&lt;/em&gt;写的kmd和gulp-kmc这两个工具，但是苦于没有gulp-kmd，默认的kmd模块只能在命令行下使用，不符合简化gulpfile.js的原则。于是乎看了下kmd源码提供的接口，找到&lt;code&gt;kmd.kissy2cmd.parse&lt;/code&gt;这个接口就开始做一个极简单的gulp插件了，以后喜欢使用gulp的童鞋也可以免去那二十几行代码写在gulpfile.js里面了。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://www.npmjs.org/package/gulp-kmd&quot;&gt;gulp-kmd传送门&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;代码比较少，直接贴代码了，解释写在代码注释中：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;var kmd = require(&#39;kmd&#39;),
+through2 = require(&#39;through2&#39;),
+gutil = require(&#39;gulp-util&#39;),
+PluginError = gutil.PluginError;  //官网强烈推荐标准的错误处理模块
+var kissy2cmd = kmd.kissy2cmd;
+const PLUGIN_NAME = &#39;gulp-kmd&#39;;
+function confirmCmd(){
+	var stream = through2.obj(function(file, enc, callback){
+		//这里的file就是一个对象，有三个属性 contents（Buffer，文件内容）、base（路径）、path（路径）
+		//enc指编码
+		if(file.isNull()){  //如果文件为空则不处理
+			return callback();
+		}
+		if(file.isStream()){
+			this.emit(&#39;error&#39;, new PluginError(PLUGIN_NAME, &#39;Streams are 				not supported!&#39;));  //规范的报错处理
+  			return cb();
+		}
+		var fileInCmd = kissy2cmd.parse(file.contents.toString(),				{ fromString : true });
+		file.contents = new Buffer(fileInCmd);
+	 	this.push(file);  //把内容放到流中使得下一个任务可以处理
+		callback();  //一定要调用callback告诉这个文件处理完了
+	});
+	return stream;
+}
+module.exports = confirmCmd;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;此外，说明一下，如果直接用fs.createReadStream会是怎样呢？如下代码：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;var fs = require(&#39;fs&#39;),
+through = require(&#39;through2&#39;);
+fs.createReadStream(&#39;test.txt&#39;)
+	.pipe(through.obj(function(file, enc, cb){
+		//这样拿到的file纯粹是一个文件的Buffer，和gulp.src拿到的不一样，也是gulp.src是对stream做了一个简单封装的表现
+		debugger;
+	}))
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&quot;section&quot;&gt;总结&lt;/h2&gt;
+
+&lt;p&gt;编写一个gulp插件还是比较简单的，重要的是先要把gulp的常用几个API熟悉，以及对stream的理解，还有就是多看别人的源码和多动手debug。要获取更多的信息请移步至&lt;a href=&quot;https://github.com/gulpjs/gulp/blob/master/docs/writing-a-plugin/README.md&quot;&gt;gulp官网&lt;/a&gt;看吧。&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>模块规范</title>
+   <link href="/2014/08/18/module.html"/>
+   <updated>2014-08-18T00:00:00+08:00</updated>
+   <id>/2014/08/18/module</id>
+   <content type="html">&lt;p&gt;&lt;a href=&quot;http://www.zhihu.com/question/20351507&quot;&gt;知乎玉伯回答&lt;/a&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;// CMD
+define(function(require, exports, module) {
+var a = require(&#39;./a&#39;)
+a.doSomething()
+// 此处略去 100 行
+var b = require(&#39;./b&#39;) // 依赖可以就近书写
+b.doSomething()
+// ... 
+})
+
+// AMD 默认推荐的是
+define([&#39;./a&#39;, &#39;./b&#39;], function(a, b) { // 依赖必须一开始就写好
+a.doSomething()
+// 此处略去 100 行
+b.doSomething()
+...
+}) 
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;kmd -&amp;gt; kmc&lt;/p&gt;
+</content>
+ </entry>
  
  <entry>
    <title>Welcome to Jekyll!</title>
