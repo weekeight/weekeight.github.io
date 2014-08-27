@@ -1,4 +1,10 @@
-# 自动构建css sprite
+---
+layout: post
+title:  "自动构建css sprite"
+date:   2014-08-28 01：18
+categories: nodejs javascript
+tag: gulp nodejs javascript css-sprite
+---
 
 ## 背景
 
