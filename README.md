@@ -1,4 +1,4 @@
-## Welcome to weekeight's blog
+## Welcome to [weekeight's blog](https://github.com/weekeight/weekeight.github.io/issues)
 
 > 专注前端
 
